@@ -17,6 +17,17 @@ export default class PostApiService extends ApiService {
   }
 
   /**
+   * Create a new Post using the given body.
+   * On success the created Post is returned.
+   * 
+   * @param body Post
+   * @returns Promise<Post>
+   */
+  public create(body: Post): Promise<Post> {
+    return this.post<Post>('', {}, body);
+  }
+
+  /**
    * Update a given Post. 
    * On success the updated Post is returned.
    * 

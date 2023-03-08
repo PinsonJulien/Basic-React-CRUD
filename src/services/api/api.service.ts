@@ -23,7 +23,7 @@ export default class ApiService {
    * @param path string|number
    * @param parameters Object
    * @param body Object
-   * @returns Promise<any>
+   * @returns Promise<T>
    */
   private async request<T>(
     method: HttpMethod, 
@@ -47,12 +47,12 @@ export default class ApiService {
   }
 
   /**
-   * Performs a GET request against the api.
+   * Performs a GET request against the api using the given path, query parameters and headers.
    * 
    * @param path Path
    * @param queryParams QueryParams
    * @param headers Headers
-   * @returns Promise<any>
+   * @returns Promise<T>
    */
   protected async get<T>(path: Path, queryParams: QueryParams = {}, headers: Headers = {}): Promise<T> {
     path = path + queryParamsToQueryString(queryParams);
@@ -61,35 +61,47 @@ export default class ApiService {
   }
 
   /**
-   * Performs a PUT request against the api.
+   * Performs a POST request against the api using the given path, headers and body.
    * 
    * @param path Path
    * @param headers Headers
    * @param body Object
-   * @returns Promise<any>
+   * @returns Promise<T>
+   */
+  protected async post<T>(path: Path, headers: Headers = {}, body: Object = {}): Promise<T> {
+    return this.request<T>(HttpMethod.POST, path, headers, body);
+  }
+
+  /**
+   * Performs a PUT request against the api using the given path, headers and body.
+   * 
+   * @param path Path
+   * @param headers Headers
+   * @param body Object
+   * @returns Promise<T>
    */
   protected async put<T>(path: Path, headers: Headers = {}, body: Object = {}): Promise<T> {
     return this.request<T>(HttpMethod.PUT, path, headers, body);
   }
 
   /**
- * Performs a PATCH request against the api.
+ * Performs a PATCH request against the api using the given path, headers and body.
  * 
  * @param path Path
  * @param headers Headers
  * @param body Object
- * @returns Promise<any>
+ * @returns Promise<T>
  */
   protected async patch<T>(path: Path, headers: Headers = {}, body: Object = {}): Promise<T> {
     return this.request<T>(HttpMethod.PATCH, path, headers, body);
   }
 
 /**
- * Performs a DELETE request against the api.
+ * Performs a DELETE request against the api using the given path and headers.
  * 
  * @param path Path
  * @param headers Headers
- * @returns Promise<any>
+ * @returns Promise<T>
  */
   protected async delete<T>(path: Path, headers: Headers = {}): Promise<T> {
     return this.request<T>(HttpMethod.DELETE, path, headers);

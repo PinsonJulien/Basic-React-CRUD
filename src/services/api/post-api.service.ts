@@ -4,7 +4,7 @@ import ApiService from "./api.service";
 export default class PostApiService extends ApiService {
 
   constructor() {
-    super('/posts');
+    super('posts');
   }
 
   /**

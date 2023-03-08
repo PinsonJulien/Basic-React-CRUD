@@ -26,6 +26,7 @@ export default class ApiService {
   ): Promise<any> {
     const response = await fetch(`${this.baseUrl}/${this.route}/${path}`, {
       method,
+      body: JSON.stringify(body),
     });
 
     return response.json();

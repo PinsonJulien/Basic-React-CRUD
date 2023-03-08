@@ -1,4 +1,4 @@
-import Post from "../../models/Post";
+import Post from "../../models/post";
 import ApiService from "./api.service";
 
 export default class PostApiService extends ApiService {
@@ -20,10 +20,10 @@ export default class PostApiService extends ApiService {
    * Create a new Post using the given body.
    * On success the created Post is returned.
    * 
-   * @param body Post
+   * @param body Partial<Post>
    * @returns Promise<Post>
    */
-  public create(body: Post): Promise<Post> {
+  public create(body: Partial<Post>): Promise<Post> {
     return this.post<Post>('', {}, body);
   }
 

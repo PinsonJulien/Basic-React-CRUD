@@ -92,7 +92,7 @@ export default class ApiService {
  * @returns Promise<any>
  */
   protected async delete(path: Path, headers: Headers = {}): Promise<any> {
-    return this.request(HttpMethod.PUT, path, headers);
+    return this.request(HttpMethod.DELETE, path, headers);
   }
 
 }

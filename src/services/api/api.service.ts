@@ -1,8 +1,10 @@
+import { QueryParams, queryParamsToQueryString } from "../../helpers/queries/query.helper";
 import { HttpMethod } from "../../types/http/http-method.enum";
 
 export default class ApiService {
-  private baseUrl = 'https://jsonplaceholder.typicode.com';
-  private route;
+  
+  private readonly baseUrl = 'https://jsonplaceholder.typicode.com';
+  private readonly route;
 
   constructor(route?: string) {
     this.route = route ?? '';
@@ -20,7 +22,7 @@ export default class ApiService {
    */
   private async request(
     method: HttpMethod, 
-    path: string|number,
+    path: Path,
     parameters: Object = {},
     body: Object = {},
   ): Promise<any> {
@@ -33,13 +35,54 @@ export default class ApiService {
   }
 
   /**
-   * Performs a get request against the api.
+   * Performs a GET request against the api.
    * 
-   * @param path string|number
-   * @param parameters Object
+   * @param path Path
+   * @param queryParams QueryParams
    * @returns Promise<any>
    */
-  protected async get(path: string|number, parameters: Object = {}): Promise<any> {
-    return this.request(HttpMethod.GET, path, parameters);
+  protected async get(path: Path, queryParams: QueryParams = {}): Promise<any> {
+    path = path + queryParamsToQueryString(queryParams);
+
+    return this.request(HttpMethod.GET, path);
   }
+
+  /**
+   * Performs a PUT request against the api.
+   * 
+   * @param path Path
+   * @param parameters Object
+   * @param body Object
+   * @returns Promise<any>
+   */
+  protected async put(path: Path, parameters: Object = {}, body: Object = {}): Promise<any> {
+    return this.request(HttpMethod.PUT, path, parameters, body);
+  }
+
+  /**
+ * Performs a PATCH request against the api.
+ * 
+ * @param path Path
+ * @param parameters Object
+ * @param body Object
+ * @returns Promise<any>
+ */
+  protected async patch(path: Path, parameters: Object = {}, body: Object = {}): Promise<any> {
+    return this.request(HttpMethod.PATCH, path, parameters, body);
+  }
+
+/**
+ * Performs a DELETE request against the api.
+ * 
+ * @param path Path
+ * @param parameters Object
+ * @returns Promise<any>
+ */
+  protected async delete(path: Path, parameters: Object = {}): Promise<any> {
+    return this.request(HttpMethod.PUT, path, parameters);
+  }
+
 }
+
+// Types
+type Path = string|number;

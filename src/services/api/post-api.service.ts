@@ -1,3 +1,4 @@
+import Post from "../../models/Post";
 import ApiService from "./api.service";
 
 export default class PostApiService extends ApiService {
@@ -6,20 +7,36 @@ export default class PostApiService extends ApiService {
     super('/posts');
   }
 
-  public getAll() {
-    return this.get('', {});
+  /**
+   * Fetch all posts from the API.
+   * 
+   * @returns Promise<Post[]>
+   */
+  public getAll(): Promise<Post[]> {
+    return this.get<Post[]>('', {});
   }
 
-  public getById(id: number) {
-    return this.get(id, {});
+  /**
+   * Update a given Post. 
+   * On success the updated Post is returned.
+   * 
+   * @param id number
+   * @param body Partial<Post>
+   * @returns Promise<Post>
+   */
+  public updateById(id: number, body: Partial<Post> = {}): Promise<Post> {
+    return this.put<Post>(id, {}, body);
   }
 
-  public updateById(id: number, body: Object = {}) {
-    return this.put(id, {}, body);
-  }
-
-  public deletebyId(id: number) {
-    return this.delete(id);
+  /**
+   * Delete a given Post.
+   * On success an empty body is returned.
+   * 
+   * @param id number
+   * @returns Promise<void>
+   */
+  public deletebyId(id: number): Promise<void> {
+    return this.delete<void>(id);
   }
 
 }

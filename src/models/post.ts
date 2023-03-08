@@ -5,13 +5,13 @@ export default class Post {
   public id: number;
   public title: string;
   public body: string;
-  public user: User;
+  public userId: User['id'];
   
   constructor(post: Post) {
     this.id = post.id;
     this.title = post.title;
     this.body = post.body;
-    this.user = new User(post.user);
+    this.userId = post.userId;
   }
-  
+
 }

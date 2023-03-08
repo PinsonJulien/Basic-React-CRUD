@@ -25,12 +25,12 @@ export default class ApiService {
    * @param body Object
    * @returns Promise<any>
    */
-  private async request(
+  private async request<T>(
     method: HttpMethod, 
     path: Path,
     headers: Headers = {},
     body: Object = {},
-  ): Promise<any> {
+  ): Promise<T> {
     // Combine the base headers with the custom ones.
     headers = {
       ...this.baseHeaders,
@@ -54,10 +54,10 @@ export default class ApiService {
    * @param headers Headers
    * @returns Promise<any>
    */
-  protected async get(path: Path, queryParams: QueryParams = {}, headers: Headers = {}): Promise<any> {
+  protected async get<T>(path: Path, queryParams: QueryParams = {}, headers: Headers = {}): Promise<T> {
     path = path + queryParamsToQueryString(queryParams);
 
-    return this.request(HttpMethod.GET, path, headers);
+    return this.request<T>(HttpMethod.GET, path, headers);
   }
 
   /**
@@ -68,8 +68,8 @@ export default class ApiService {
    * @param body Object
    * @returns Promise<any>
    */
-  protected async put(path: Path, headers: Headers = {}, body: Object = {}): Promise<any> {
-    return this.request(HttpMethod.PUT, path, headers, body);
+  protected async put<T>(path: Path, headers: Headers = {}, body: Object = {}): Promise<T> {
+    return this.request<T>(HttpMethod.PUT, path, headers, body);
   }
 
   /**
@@ -80,8 +80,8 @@ export default class ApiService {
  * @param body Object
  * @returns Promise<any>
  */
-  protected async patch(path: Path, headers: Headers = {}, body: Object = {}): Promise<any> {
-    return this.request(HttpMethod.PATCH, path, headers, body);
+  protected async patch<T>(path: Path, headers: Headers = {}, body: Object = {}): Promise<T> {
+    return this.request<T>(HttpMethod.PATCH, path, headers, body);
   }
 
 /**
@@ -91,8 +91,8 @@ export default class ApiService {
  * @param headers Headers
  * @returns Promise<any>
  */
-  protected async delete(path: Path, headers: Headers = {}): Promise<any> {
-    return this.request(HttpMethod.DELETE, path, headers);
+  protected async delete<T>(path: Path, headers: Headers = {}): Promise<T> {
+    return this.request<T>(HttpMethod.DELETE, path, headers);
   }
 
 }

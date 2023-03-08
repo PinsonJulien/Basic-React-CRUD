@@ -1,6 +1,6 @@
 import ApiService from "./api.service"
 
-describe('ApiSerbice', () => {
+describe('ApiService', () => {
   it('', () => {
 
   });

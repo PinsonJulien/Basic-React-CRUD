@@ -1,4 +1,9 @@
-export function objectToQueryString(obj: { [key: string]: string|number }): string {
+// Types
+export interface QueryParams {
+  [key: string]: string|number
+};
+
+export function queryParamsToQueryString(obj: QueryParams): string {
   const keys = Object.keys(obj);
   if (!keys.length)
     return '';

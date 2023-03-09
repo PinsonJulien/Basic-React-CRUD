@@ -13,7 +13,8 @@ export default class UserApiService extends ApiService {
    * @returns Promise<User[]>
    */
   public getAll(): Promise<User[]> {
-    return this.get<User[]>('', {});
+    return this.get<User[]>('', {})
+      .then((arr: Array<User>) => arr.map((user: User) => new User(user)));
   }
-  
+
 }

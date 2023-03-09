@@ -1,8 +1,33 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import './App.scss'
+import Post from './models/Post'
+import User from './models/User';
+import PostApiService from './services/api/post-api.service';
+import UserApiService from './services/api/user-api.service';
 
-function App() {
+export default function App() {
+  // Services
+  const postApiService = new PostApiService();
+  const userApiService = new UserApiService();
+
+  // States
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    // Fetch posts and users on mount.
+    const fetchData = async () => {
+      const posts = await postApiService.getAll();
+      const users = await userApiService.getAll();
+
+      setPosts(posts);
+      setUsers(users);
+    };
+
+    fetchData();
+  }, []);
+
   const [count, setCount] = useState(0)
 
   return (
@@ -30,5 +55,3 @@ function App() {
     </div>
   )
 }
-
-export default App

@@ -37,11 +37,13 @@ export default class ApiService {
       ...headers,
     };
 
-    const response = await fetch(`${this.baseUrl}/${this.route}/${path}`, {
-      method,
-      body: JSON.stringify(body),
-      headers,
-    });
+    const requestInit: RequestInit = { method, headers, };
+
+    // Add the body on POST / PUT / PATCH
+    if (method === HttpMethod.POST || method === HttpMethod.PUT || method === HttpMethod.PATCH)
+      requestInit.body = JSON.stringify(body)
+
+    const response = await fetch(`${this.baseUrl}/${this.route}/${path}`, requestInit);
 
     return response.json();
   }

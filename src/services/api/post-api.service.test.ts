@@ -1,4 +1,4 @@
-import Post from "../../models/post";
+import Post from "../../models/Post";
 import PostApiService from "./post-api.service";
 
 describe("PostApiService", () => {

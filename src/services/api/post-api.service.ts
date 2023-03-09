@@ -1,4 +1,4 @@
-import Post from "../../models/post";
+import Post from "../../models/Post";
 import ApiService from "./api.service";
 
 export default class PostApiService extends ApiService {
@@ -12,8 +12,19 @@ export default class PostApiService extends ApiService {
    * 
    * @returns Promise<Post[]>
    */
-  public getAll(): Promise<Post[]> {
-    return this.get<Post[]>('', {});
+  public async getAll(): Promise<Post[]> {
+    return this.get<Post[]>('', {})
+      .then((arr: Array<Post>) => arr.map((post: Post) => new Post(post)));
+  }
+
+  /**
+   * Fetch a post from the API by the given ID.
+   * 
+   * @returns Promise<Post>
+   */
+  public async getById(id: number): Promise<Post> {
+    return this.get<Post>(id, {})
+      .then((post: Post) => new Post(post));
   }
 
   /**
@@ -23,8 +34,9 @@ export default class PostApiService extends ApiService {
    * @param body Partial<Post>
    * @returns Promise<Post>
    */
-  public create(body: Partial<Post>): Promise<Post> {
-    return this.post<Post>('', {}, body);
+  public async create(body: Partial<Post>): Promise<Post> {
+    return this.post<Post>('', {}, body)
+      .then((post: Post) => new Post(post));
   }
 
   /**
@@ -35,8 +47,9 @@ export default class PostApiService extends ApiService {
    * @param body Partial<Post>
    * @returns Promise<Post>
    */
-  public updateById(id: number, body: Partial<Post> = {}): Promise<Post> {
-    return this.put<Post>(id, {}, body);
+  public async updateById(id: number, body: Partial<Post> = {}): Promise<Post> {
+    return this.patch<Post>(id, {}, body)
+      .then((post: Post) => new Post(post));
   }
 
   /**
@@ -46,7 +59,7 @@ export default class PostApiService extends ApiService {
    * @param id number
    * @returns Promise<void>
    */
-  public deletebyId(id: number): Promise<void> {
+  public async deletebyId(id: number): Promise<void> {
     return this.delete<void>(id);
   }
 

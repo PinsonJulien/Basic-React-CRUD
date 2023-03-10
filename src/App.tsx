@@ -36,9 +36,9 @@ export default function App(): JSX.Element {
   }, []);
 
   // Handlers for update / delete buttons.
-  const handlePostEditClick = (post: Post): void  => {
+  const handlePostEditClick = (updatedPost: Post): void  => {
     // Use the post data to fill the form.
-    const { title, body, userId } = post;
+    const { title, body, userId } = updatedPost;
     setPostForm({
       title,
       body,
@@ -50,8 +50,9 @@ export default function App(): JSX.Element {
     // TODO
   };
 
-  const handlePostDeleteClick = (post: Post): void => {
-    console.log(post);
+  const handlePostDeleteClick = (deletedPost: Post): void => {
+    const tmpPosts = posts.filter((post: Post) => post.id !== deletedPost.id);
+    setPosts(tmpPosts);
   };
 
   const createPost = async (post: Partial<Post>): Promise<boolean> => {

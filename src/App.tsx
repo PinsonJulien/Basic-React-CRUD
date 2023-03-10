@@ -37,7 +37,17 @@ export default function App(): JSX.Element {
 
   // Handlers for update / delete buttons.
   const handlePostEditClick = (post: Post): void  => {
-    console.log(post);
+    // Use the post data to fill the form.
+    const { title, body, userId } = post;
+    setPostForm({
+      title,
+      body,
+      userId: (userId) ? userId.toString() : '',
+    });
+
+    // Open the modal
+
+    // TODO
   };
 
   const handlePostDeleteClick = (post: Post): void => {

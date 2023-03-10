@@ -5,7 +5,7 @@ export default class Post {
   public id: number;
   public title: string;
   public body: string;
-  public userId: User['id'];
+  public userId: User['id'] | null;
   
   constructor(post: Post) {
     this.id = post.id;

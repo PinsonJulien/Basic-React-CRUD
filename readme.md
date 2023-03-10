@@ -58,3 +58,6 @@ Due to the lack of available time to build clean and scalable components, I had 
 
 - Delete
   - Localstorage keeps id of deleted records.
+  
+- PostForm
+  - Make the validation a useState.

@@ -4,6 +4,7 @@ import User from '../../models/User';
 import './post-form.component.scss';
 
 export interface PostFormFields {
+  id: number;
   title: string;
   body: string;
   userId: string;

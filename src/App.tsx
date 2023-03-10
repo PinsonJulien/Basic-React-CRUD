@@ -17,6 +17,7 @@ export default function App(): JSX.Element {
   const [users, setUsers] = useState<User[]>([]);
   
   const [postForm, setPostForm] = useState<PostFormFields>({
+    id: 0,
     title: '',
     body: '',
     userId: ''
@@ -35,10 +36,36 @@ export default function App(): JSX.Element {
     fetchData();
   }, []);
 
+  // Handlers for update / delete buttons.
+  const handlePostEditClick = (updatedPost: Post): void  => {
+    // Use the post data to fill the form.
+    const { id, title, body, userId } = updatedPost;
+
+    setPostForm({
+      id,
+      title,
+      body,
+      userId: (userId) ? userId.toString() : '',
+    });
+
+    // Open the modal
+
+    // TODO
+  };
+
+  const handlePostDeleteClick = async (deletedPost: Post): Promise<void> => {
+    const { id } = deletedPost;
+    // Delete the post using the API.
+    await postApiService.deletebyId(id);
+
+    // Remove it from the list.
+    const tmpPosts = posts.filter((post: Post) => post.id !== id);
+    setPosts(tmpPosts);
+  };
+
   const createPost = async (post: Partial<Post>): Promise<boolean> => {
     // First check if the given Post data is valid.
-    const isPostValid = Object.keys(formValidation(post)).length;
-    if (!isPostValid)
+    if (!isPostValid(post))
       return false;
 
     // Attempt to create it using the API.
@@ -47,8 +74,36 @@ export default function App(): JSX.Element {
     if (!newPost) return false;
 
     // On success add it to the list of posts.
-    const tmpPosts = posts;
+    const tmpPosts = [...posts];
     tmpPosts.push(newPost);
+    setPosts(tmpPosts);
+
+    return true;
+  }
+
+  const updatePost = async (): Promise<boolean> => {
+    const { id, title, body, userId } = postForm;
+
+    const formUserId = parseInt(userId);
+    const post: Partial<Post> = {
+      title,
+      body,
+      userId: (!isNaN(formUserId)) ? formUserId : null,
+    };
+
+    // First check if the given Post data is valid.
+    if (!isPostValid(post))
+      return false;
+    
+    const updatedPost = await postApiService.updateById(id, post);
+
+    if (!updatedPost) return false;
+
+    // On success modify the post from the list of posts.
+    const tmpPosts = [...posts];
+    const index = tmpPosts.findIndex((post: Post) => post.id === id);
+
+    tmpPosts[index] = updatedPost;
     setPosts(tmpPosts);
 
     return true;
@@ -74,6 +129,10 @@ export default function App(): JSX.Element {
     return errors;
   }
 
+  const isPostValid = (post: Partial<Post>): boolean => {
+    return Object.keys(formValidation(post)).length === 0;
+  }
+
   return (
     <div>
       <h1>Posts</h1>
@@ -89,7 +148,12 @@ export default function App(): JSX.Element {
         />
       </div>
 
-      <PostsList posts={posts} users={users} />
+      <PostsList 
+        posts={posts} 
+        users={users} 
+        handlePostEditClick={handlePostEditClick}
+        handlePostDeleteClick={handlePostDeleteClick}
+      />
     </div>
   )
 }

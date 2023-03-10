@@ -1,38 +1,41 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Post from '../../models/Post';
 import User from '../../models/User';
 import './post-form.component.scss';
 
+export interface PostFormFields {
+  title: string;
+  body: string;
+  userId: string;
+}
+
 export interface PostFormErrors {
   title?: string;
   body?: string;
-  userId?: string;
+  userId?: string; 
 };
 
 interface PostFormProps {
   users: User[];
+  postForm: PostFormFields;
+  setPostForm: React.Dispatch<React.SetStateAction<PostFormFields>>;
   handleSubmit: (post: Partial<Post>) => Promise<boolean>;
   validation: (post: Partial<Post>) => PostFormErrors;
 };
 
 export default function PostForm(
-  { users, handleSubmit, validation }: PostFormProps
+  { users, postForm, setPostForm, handleSubmit, validation }: PostFormProps
 ): JSX.Element
 {
-  // States
-  const [title, setTitle] = useState<Post['title']>('');
-  const [body, setBody] = useState<Post['body']>('');
-  const [userId, setUserId] = useState<string>('');
-
   // Methods
   const formSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const formUserId = parseInt(userId);
+    const formUserId = parseInt(postForm.userId);
 
     const post: Partial<Post> = {
-      title,
-      body,
+      title: postForm.title,
+      body: postForm.body,
       userId: (!isNaN(formUserId)) ? formUserId : null,
     }
 
@@ -48,13 +51,13 @@ export default function PostForm(
 
     // Call the form submission and clear the form.
     await handleSubmit(post);
-    resetForm();
   }
 
-  const resetForm = () => {
-    setTitle('');
-    setBody('');
-    setUserId('');
+  const handleFieldChange = (event: React.ChangeEvent<HTMLInputElement|HTMLSelectElement>) => {
+    setPostForm({
+      ...postForm,
+      [event.target.id]: event.target.value,
+    });
   }
 
   return (
@@ -64,8 +67,8 @@ export default function PostForm(
           type="text"
           id="title"
           name="title"
-          value={title}
-          onChange={(event) => setTitle(event.target.value)}
+          value={postForm.title}
+          onChange={handleFieldChange}
         />
         <label htmlFor="title">
           Title :
@@ -77,8 +80,8 @@ export default function PostForm(
           type="text"
           id="body"
           name="body"
-          value={body}
-          onChange={(event) => setBody(event.target.value)}
+          value={postForm.body}
+          onChange={handleFieldChange}
         />
         <label htmlFor="body">
           Body :
@@ -87,10 +90,10 @@ export default function PostForm(
 
       <div>
         <select
-          id="user"
-          name="user"
-          value={userId ?? ''}
-          onChange={(event) => setUserId(event.target.value)}
+          id="userId"
+          name="userId"
+          value={postForm.userId}
+          onChange={handleFieldChange}
         >
           <option value="">Select a user</option>
           {

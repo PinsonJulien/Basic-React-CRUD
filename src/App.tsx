@@ -5,7 +5,7 @@ import User from './models/User';
 import PostApiService from './services/api/post-api.service';
 import UserApiService from './services/api/user-api.service';
 import PostsList from './components/posts-list/posts-list.component';
-import PostForm, { PostFormErrors } from './components/post-form/post-form.component';
+import PostForm, { PostFormErrors, PostFormFields } from './components/post-form/post-form.component';
 
 export default function App(): JSX.Element {
   // Services
@@ -15,6 +15,12 @@ export default function App(): JSX.Element {
   // States
   const [posts, setPosts] = useState<Post[]>([]);
   const [users, setUsers] = useState<User[]>([]);
+  
+  const [postForm, setPostForm] = useState<PostFormFields>({
+    title: '',
+    body: '',
+    userId: ''
+  });
 
   useEffect(() => {
     // Fetch posts and users on mount.
@@ -74,7 +80,13 @@ export default function App(): JSX.Element {
 
       <div>
         <h2>Create post</h2>
-        <PostForm users={users} handleSubmit={createPost} validation={formValidation} />
+        <PostForm 
+          users={users}
+          postForm={postForm}
+          setPostForm={setPostForm}
+          handleSubmit={createPost} 
+          validation={formValidation} 
+        />
       </div>
 
       <PostsList posts={posts} users={users} />

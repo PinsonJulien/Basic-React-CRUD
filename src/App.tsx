@@ -5,6 +5,7 @@ import User from './models/User';
 import PostApiService from './services/api/post-api.service';
 import UserApiService from './services/api/user-api.service';
 import PostsList from './components/posts-list/posts-list.component';
+import PostForm from './components/post-form/post-form.component';
 
 export default function App(): JSX.Element {
   // Services
@@ -28,9 +29,20 @@ export default function App(): JSX.Element {
     fetchData();
   }, []);
 
+  const createPost = async (post: Post): Promise<void> => {
+    //
+  }
+
   return (
     <div>
       <h1>Posts</h1>
+
+      <div>
+        <h2>Create post</h2>
+        <PostForm users={users} createPost={createPost} />
+      </div>
+
+
       <PostsList posts={posts} users={users} />
     </div>
   )

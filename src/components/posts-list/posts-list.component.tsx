@@ -5,10 +5,12 @@ import User from "../../models/User";
 interface PostsListProps {
   posts: Post[];
   users: User[];
+  handlePostEditClick: (post: Post) => void;
+  handlePostDeleteClick: (post: Post) => void;
 };
 
 export default function PostsList(
-  {posts, users}: PostsListProps
+  { posts, users, handlePostEditClick, handlePostDeleteClick }: PostsListProps
 ): JSX.Element 
 {
 
@@ -26,6 +28,14 @@ export default function PostsList(
             {user.name}
           </span>
         }
+        
+        <button onClick={() => handlePostEditClick(post)}>
+          Edit
+        </button>
+
+        <button onClick={() => handlePostDeleteClick(post)}>
+          Delete
+        </button>
 
       </div>
     );

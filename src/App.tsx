@@ -35,6 +35,15 @@ export default function App(): JSX.Element {
     fetchData();
   }, []);
 
+  // Handlers for update / delete buttons.
+  const handlePostEditClick = (post: Post): void  => {
+    console.log(post);
+  };
+
+  const handlePostDeleteClick = (post: Post): void => {
+    console.log(post);
+  };
+
   const createPost = async (post: Partial<Post>): Promise<boolean> => {
     // First check if the given Post data is valid.
     const isPostValid = Object.keys(formValidation(post)).length;
@@ -89,7 +98,12 @@ export default function App(): JSX.Element {
         />
       </div>
 
-      <PostsList posts={posts} users={users} />
+      <PostsList 
+        posts={posts} 
+        users={users} 
+        handlePostEditClick={handlePostEditClick}
+        handlePostDeleteClick={handlePostDeleteClick}
+      />
     </div>
   )
 }

@@ -20,9 +20,13 @@ export default function PostsList(
         <span>
           {post.title}
         </span>
-        <span>
-          {user?.name}
-        </span>
+        { 
+          user && 
+          <span>
+            {user.name}
+          </span>
+        }
+
       </div>
     );
   }

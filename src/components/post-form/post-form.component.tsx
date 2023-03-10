@@ -3,13 +3,20 @@ import Post from '../../models/Post';
 import User from '../../models/User';
 import './post-form.component.scss';
 
+export interface PostFormErrors {
+  title?: string;
+  body?: string;
+  userId?: string;
+};
+
 interface PostFormProps {
   users: User[];
-  createPost: (post: Partial<Post>) => Promise<boolean>;
+  handleSubmit: (post: Partial<Post>) => Promise<boolean>;
+  validation: (post: Partial<Post>) => PostFormErrors;
 };
 
 export default function PostForm(
-  { users, createPost } : PostFormProps
+  { users, handleSubmit, validation }: PostFormProps
 ): JSX.Element
 {
   // States
@@ -29,7 +36,18 @@ export default function PostForm(
       userId: (!isNaN(formUserId)) ? formUserId : null,
     }
 
-    await createPost(post);
+    // Check if the form has any error.
+    const formErrors = validation(post);
+
+    // If there's errors, manipulate the dom to show the error messages.
+    if (Object.keys(formErrors).length) {
+      // Manipulate the DOM
+      console.error(formErrors);
+      return;
+    }
+
+    // Call the form submission and clear the form.
+    await handleSubmit(post);
     resetForm();
   }
 

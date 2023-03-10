@@ -5,7 +5,7 @@ import './post-form.component.scss';
 
 interface PostFormProps {
   users: User[];
-  createPost: (post: Post) => void;
+  createPost: (post: Partial<Post>) => Promise<boolean>;
 };
 
 export default function PostForm(
@@ -18,7 +18,7 @@ export default function PostForm(
   const [userId, setUserId] = useState<string>('');
 
   // Methods
-  const formSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const formSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const formUserId = parseInt(userId);
@@ -29,7 +29,14 @@ export default function PostForm(
       userId: (!isNaN(formUserId)) ? formUserId : null,
     }
 
-    console.log(post);
+    await createPost(post);
+    resetForm();
+  }
+
+  const resetForm = () => {
+    setTitle('');
+    setBody('');
+    setUserId('');
   }
 
   return (

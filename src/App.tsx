@@ -29,8 +29,16 @@ export default function App(): JSX.Element {
     fetchData();
   }, []);
 
-  const createPost = async (post: Post): Promise<void> => {
-    //
+  const createPost = async (post: Partial<Post>): Promise<boolean> => {
+    const newPost = await postApiService.create(post);
+
+    if (!newPost) return false;
+
+    const tmpPosts = posts;
+    tmpPosts.push(newPost);
+    setPosts(tmpPosts);
+
+    return true;
   }
 
   return (

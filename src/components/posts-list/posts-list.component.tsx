@@ -36,7 +36,7 @@ export default function PostsList(
     <ul className='flex flex-col gap-3'>
       {
         posts.map((post: Post) => {
-          return(
+          return (
             <li key={post.id}>
               <PostComponent post={post} />
             </li>

@@ -1,3 +1,4 @@
+import './posts-list.component.scss';
 import Post from "../../models/Post";
 import User from "../../models/User";
 
@@ -10,9 +11,34 @@ export default function PostsList(
   {posts, users}: PostsListProps
 ): JSX.Element 
 {
+
+  const PostComponent = ({ post }: { post: Post }): JSX.Element => {
+    const user = users.find((user: User) => user.id === post.userId);
+
+    return (
+      <div className='flex flex-col'>
+        <span>
+          {post.title}
+        </span>
+        <span>
+          {user?.name}
+        </span>
+      </div>
+    );
+  }
+
+
   return(
-    <h1>
-      Mounted
-    </h1>
+    <ul className='flex flex-col gap-3'>
+      {
+        posts.map((post: Post) => {
+          return(
+            <li key={post.id}>
+              <PostComponent post={post} />
+            </li>
+          )
+        })
+      }
+    </ul>
   );
 }

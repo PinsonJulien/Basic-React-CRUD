@@ -50,8 +50,13 @@ export default function App(): JSX.Element {
     // TODO
   };
 
-  const handlePostDeleteClick = (deletedPost: Post): void => {
-    const tmpPosts = posts.filter((post: Post) => post.id !== deletedPost.id);
+  const handlePostDeleteClick = async (deletedPost: Post): Promise<void> => {
+    const { id } = deletedPost;
+    // Delete the post using the API.
+    await postApiService.deletebyId(id);
+
+    // Remove it from the list.
+    const tmpPosts = posts.filter((post: Post) => post.id !== id);
     setPosts(tmpPosts);
   };
 

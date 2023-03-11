@@ -7,6 +7,7 @@ import UserApiService from './services/api/user-api.service';
 import PostsList from './components/posts-list/posts-list.component';
 import PostForm, { PostFormErrors, PostFormFields } from './components/post-form/post-form.component';
 import PostLocalStorageService from './services/local-storage/post-local-storage.service';
+import PostFormModal from './components/posts/post-form-modal.component';
 
 export default function App(): JSX.Element {
   // Services
@@ -18,6 +19,8 @@ export default function App(): JSX.Element {
   const [posts, setPosts] = useState<Post[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   
+  const [openPostFormModal, setOpenPostFormModal] = useState<boolean>(true);
+
   const [postForm, setPostForm] = useState<PostFormFields>({
     id: 0,
     title: '',
@@ -158,6 +161,16 @@ export default function App(): JSX.Element {
         users={users} 
         handlePostEditClick={handlePostEditClick}
         handlePostDeleteClick={handlePostDeleteClick}
+      />
+
+      <PostFormModal 
+        open={openPostFormModal}
+        setOpen={setOpenPostFormModal}
+        users={users}
+        postForm={postForm}
+        setPostForm={setPostForm}
+        handleSubmit={createPost}
+        validation={formValidation}
       />
     </div>
   )

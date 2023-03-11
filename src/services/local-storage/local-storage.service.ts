@@ -6,6 +6,15 @@ export default class LocalStorageService {
   }
 
   /**
+   * Returns the value of the localStorage key.
+   * 
+   * @returns string
+   */
+  public getKey(): string {
+    return this.key;
+  }
+
+  /**
    * Set the value of the key in the localStorage.
    * 
    * @param value T

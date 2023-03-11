@@ -6,11 +6,13 @@ import PostApiService from './services/api/post-api.service';
 import UserApiService from './services/api/user-api.service';
 import PostsList from './components/posts-list/posts-list.component';
 import PostForm, { PostFormErrors, PostFormFields } from './components/post-form/post-form.component';
+import PostLocalStorageService from './services/local-storage/post-local-storage.service';
 
 export default function App(): JSX.Element {
   // Services
   const postApiService = new PostApiService();
   const userApiService = new UserApiService();
+  const postLocalStorageService = new PostLocalStorageService();
 
   // States
   const [posts, setPosts] = useState<Post[]>([]);
@@ -26,10 +28,17 @@ export default function App(): JSX.Element {
   useEffect(() => {
     // Fetch posts and users on mount.
     const fetchData = async () => {
-      const posts = await postApiService.getAll();
-      const users = await userApiService.getAll();
+      // Try to get the data from the localstorage, if it's empty, call the API.
+      let posts = postLocalStorageService.getAll();
+
+      if (!posts.length) {
+        posts = await postApiService.getAll();
+        postLocalStorageService.add(...posts);
+      }
 
       setPosts(posts);
+      
+      const users = await userApiService.getAll();
       setUsers(users);
     };
 
@@ -58,9 +67,9 @@ export default function App(): JSX.Element {
     // Delete the post using the API.
     await postApiService.deletebyId(id);
 
-    // Remove it from the list.
-    const tmpPosts = posts.filter((post: Post) => post.id !== id);
-    setPosts(tmpPosts);
+    // Remove it from the localStorage and refreshs the posts
+    postLocalStorageService.delete(id);
+    setPosts(postLocalStorageService.getAll());
   };
 
   const createPost = async (post: Partial<Post>): Promise<boolean> => {
@@ -73,10 +82,9 @@ export default function App(): JSX.Element {
 
     if (!newPost) return false;
 
-    // On success add it to the list of posts.
-    const tmpPosts = [...posts];
-    tmpPosts.push(newPost);
-    setPosts(tmpPosts);
+    // On success add it to localstorage and refresh posts using the localstorage.
+    postLocalStorageService.add(newPost);
+    setPosts(postLocalStorageService.getAll());
 
     return true;
   }
@@ -99,12 +107,9 @@ export default function App(): JSX.Element {
 
     if (!updatedPost) return false;
 
-    // On success modify the post from the list of posts.
-    const tmpPosts = [...posts];
-    const index = tmpPosts.findIndex((post: Post) => post.id === id);
-
-    tmpPosts[index] = updatedPost;
-    setPosts(tmpPosts);
+    // On success modify the post in the localStorage and refresh posts using the localstorage.
+    postLocalStorageService.update(updatedPost);
+    setPosts(postLocalStorageService.getAll());
 
     return true;
   }

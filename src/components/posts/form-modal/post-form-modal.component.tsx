@@ -1,5 +1,5 @@
-import React from "react";
-import Post from "../../../models/Post";
+import React, { useState } from "react";
+import './post-form-modal.component.scss';
 import User from "../../../models/User";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from '@mui/material/DialogActions';
@@ -7,24 +7,22 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import InputLabel from '@mui/material/InputLabel';
+import Autocomplete from '@mui/material/Autocomplete';
 
 export interface PostFormFields {
   id: number;
   title: string;
   body: string;
-  userId: string;
+  user: User | null;
 };
 
 export interface PostFormErrors {
   title?: string;
   body?: string;
-  userId?: string; 
+  user?: string; 
 };
 
-interface PostFormModalProps {
+export interface PostFormModalProps {
   title: string;
   submitButtonName: string;
   open: boolean;
@@ -33,8 +31,8 @@ interface PostFormModalProps {
   users: User[];
   postForm: PostFormFields;
   setPostForm: React.Dispatch<React.SetStateAction<PostFormFields>>;
-  handleSubmit: (post: Partial<Post>) => Promise<boolean>;
-  validation: (post: Partial<Post>) => PostFormErrors;
+  handleSubmit: (postFormFields: PostFormFields) => Promise<boolean> | null;
+  validation: (postFormFields: PostFormFields) => PostFormErrors;
 };
 
 export default function PostFormModal(
@@ -51,39 +49,35 @@ export default function PostFormModal(
   }: PostFormModalProps
 ): JSX.Element
 {
+  const [formErrors, setFormErrors] = useState<PostFormErrors>({});
+
   const handleClose = () => {
+    // Close the dialog and clear the errors.
     setOpen(false);
+    setFormErrors({});
   };
 
   const formSubmit = async () => {
-    const formUserId = parseInt(postForm.userId);
-
-    const post: Partial<Post> = {
-      title: postForm.title,
-      body: postForm.body,
-      userId: (!isNaN(formUserId)) ? formUserId : null,
-    }
-
     // Check if the form has any error.
-    const formErrors = validation(post);
+    const errors = validation(postForm);
+    setFormErrors(errors);
 
     // If there's errors, manipulate the dom to show the error messages.
-    if (Object.keys(formErrors).length) {
-      // Manipulate the DOM
-      console.error(formErrors);
-      return;
-    }
-
-    // Call the form submission and clear the form.
-    await handleSubmit(post);
+    if (!Object.keys(errors).length) {
+      // Call the form submission and clear the form.
+      await handleSubmit(postForm);
+      
+      // Close the modal
+      setOpen(false);
+    }    
   }
 
-  const handleFieldChange = (event: React.ChangeEvent<HTMLInputElement|HTMLSelectElement>) => {
+  const handleFieldChange = async (name: string, value: any) => {
     setPostForm({
       ...postForm,
-      [event.target.id]: event.target.value,
+      [name]: value
     });
-  }
+  };
 
   return (
     <Dialog
@@ -93,75 +87,70 @@ export default function PostFormModal(
       <DialogTitle>
         {title}
       </DialogTitle>
+
       <DialogContent>
-        <TextField 
-          autoFocus
-          margin="dense"
+        <TextField
           id="title"
+          name="title"
+          autoFocus
+          margin="normal"
           label="Title"
           type="text"
           fullWidth
           variant="standard"
           value={postForm.title}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            handleFieldChange(e);
+            const { name, value } = e.target;
+            handleFieldChange(name, value);
           }}
+          error={!!formErrors.title}
+          helperText={formErrors.title}
         />
 
         <TextField
-          multiline
-          rows="7"
-          autoFocus
-          margin="dense"
           id="body"
+          name="body"
+          multiline
+          rows="8"
+          autoFocus
+          margin="normal"         
           label="Body"
           type="text"
           fullWidth
           variant="standard"
           value={postForm.body}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-            handleFieldChange(e);
+            const { name, value } = e.target;
+            handleFieldChange(name, value);
           }}
+          error={!!formErrors.body}
+          helperText={formErrors.body}
         />
 
-        <InputLabel id="select-user-id-label">Age</InputLabel>
-        <Select
-          id="userId"
-          labelId="select-user-id-label"
-          value={postForm.userId}
-          defaultValue=""
-          onChange={(id, payload) => {
-            /*console.log(id)
-            console.log(payload)
-            const target = event.currentTarget;
-
-            console.log(target)
-            let e: React.ChangeEvent<HTMLInputElement> = event as React.ChangeEvent<HTMLInputElement>;
-            console.log(e)
-            handleFieldChange(e);*/
+        <Autocomplete
+          options={users}
+          value={postForm.user}
+          getOptionLabel={(user: User) => user.name}
+          onChange={(event, value) => {
+            handleFieldChange('user', value);
           }}
-        >
-          <MenuItem value="">
-            None
-          </MenuItem>
-          
-          {
-            users.map((user: User) => (
-              <MenuItem
-                key={user.id}
-                value={user.id}
-              >
-                { user.name }
-              </MenuItem>
-            ))
-          }
-
-        </Select>
-
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              id="user"
+              name="user"            
+              label="Select author"
+              variant="outlined"
+              margin="normal"
+              error={!!formErrors.user}
+              helperText={formErrors.user}
+            />
+          )}
+        />
       </DialogContent>
 
       <DialogActions>
-        <Button>{submitButtonName}</Button>
+        <Button onClick={formSubmit}>{submitButtonName}</Button>
         <Button onClick={handleClose}>Cancel</Button>      
       </DialogActions>
     </Dialog>

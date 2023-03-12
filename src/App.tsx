@@ -7,7 +7,7 @@ import UserApiService from './services/api/user-api.service';
 import PostsList from './components/posts-list/posts-list.component';
 import PostForm, { PostFormErrors, PostFormFields } from './components/post-form/post-form.component';
 import PostLocalStorageService from './services/local-storage/post-local-storage.service';
-import PostFormModal from './components/posts/post-form-modal.component';
+import PostFormModal from './components/posts/form-modal/post-form-modal.component';
 
 export default function App(): JSX.Element {
   // Services
@@ -61,8 +61,7 @@ export default function App(): JSX.Element {
     });
 
     // Open the modal
-
-    // TODO
+    setOpenPostFormModal(true);
   };
 
   const handlePostDeleteClick = async (deletedPost: Post): Promise<void> => {
@@ -163,7 +162,9 @@ export default function App(): JSX.Element {
         handlePostDeleteClick={handlePostDeleteClick}
       />
 
-      <PostFormModal 
+      <PostFormModal
+        title="test"
+        submitButtonName="Submit"
         open={openPostFormModal}
         setOpen={setOpenPostFormModal}
         users={users}

@@ -1,6 +1,6 @@
 import React from "react";
-import Post from "../../models/Post";
-import User from "../../models/User";
+import Post from "../../../models/Post";
+import User from "../../../models/User";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
@@ -25,6 +25,8 @@ export interface PostFormErrors {
 };
 
 interface PostFormModalProps {
+  title: string;
+  submitButtonName: string;
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 
@@ -36,16 +38,45 @@ interface PostFormModalProps {
 };
 
 export default function PostFormModal(
-  {open, users, setOpen, postForm, setPostForm, handleSubmit, validation}: PostFormModalProps
+  {
+    title, 
+    submitButtonName, 
+    open, 
+    users, 
+    setOpen, 
+    postForm, 
+    setPostForm, 
+    handleSubmit, 
+    validation
+  }: PostFormModalProps
 ): JSX.Element
 {
-
-  const formTitle = 'Example';
-  const submitButtonName = 'CLICK';
-
   const handleClose = () => {
     setOpen(false);
   };
+
+  const formSubmit = async () => {
+    const formUserId = parseInt(postForm.userId);
+
+    const post: Partial<Post> = {
+      title: postForm.title,
+      body: postForm.body,
+      userId: (!isNaN(formUserId)) ? formUserId : null,
+    }
+
+    // Check if the form has any error.
+    const formErrors = validation(post);
+
+    // If there's errors, manipulate the dom to show the error messages.
+    if (Object.keys(formErrors).length) {
+      // Manipulate the DOM
+      console.error(formErrors);
+      return;
+    }
+
+    // Call the form submission and clear the form.
+    await handleSubmit(post);
+  }
 
   const handleFieldChange = (event: React.ChangeEvent<HTMLInputElement|HTMLSelectElement>) => {
     setPostForm({
@@ -60,7 +91,7 @@ export default function PostFormModal(
       onClose={handleClose}
     >
       <DialogTitle>
-        {formTitle}
+        {title}
       </DialogTitle>
       <DialogContent>
         <TextField 
@@ -79,6 +110,7 @@ export default function PostFormModal(
 
         <TextField
           multiline
+          rows="7"
           autoFocus
           margin="dense"
           id="body"
@@ -97,10 +129,11 @@ export default function PostFormModal(
           id="userId"
           labelId="select-user-id-label"
           value={postForm.userId}
+          defaultValue=""
           onChange={(id, payload) => {
-            console.log(id)
+            /*console.log(id)
             console.log(payload)
-            /*const target = event.currentTarget;
+            const target = event.currentTarget;
 
             console.log(target)
             let e: React.ChangeEvent<HTMLInputElement> = event as React.ChangeEvent<HTMLInputElement>;

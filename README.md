@@ -24,9 +24,13 @@ For the unit testing, I chose Jest.
 
 The design is using: SASS, Tailwind and MaterialUI.
 
+The application is automatically deployed on Netlify.
+
+The localStorage is used to store the first fetched data from JSONPlaceholder API, all the CRUD methods still call the API, but the changes are reflected on the localStorage for data persistance.
+
 ## Try it online
 
-LINK + explanation
+https://basic-react-crud-pinson-julien.netlify.app/
 
 ## Commands
 

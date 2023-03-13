@@ -1,4 +1,4 @@
-# Basic React CRUD application (WORK IN PROGRESS)
+# Basic React CRUD application
 
 ## Scope
 
@@ -18,11 +18,11 @@ Creating a simple CRUD application using React and JSONPlaceholder API.
 
 ## Design choices
 
-Typescript
-Build tool : Vite
-Unit testing: Jest
-End-to-End testing : Cypress
-Styling : SASS, Tailwind, MaterialUI
+This application is built using React with TypeScript. I used the Vite build tool, because of it's build performances.
+
+For the unit testing, I chose Jest.
+
+The design is using: SASS, Tailwind and MaterialUI.
 
 ## Try it online
 
@@ -36,16 +36,24 @@ LINK + explanation
 - Jest tests : `npm run test`
 - Jest tests (watch mode) : `npm run test:watch`
 
+## What I would add if I had more time
+
+- Filtering with an input the list of posts
+- Allow to change the sorting from ASC to DESC, using a styled radio input.
+
 ## What I would improve
+
+### Performances
+
+The application currently suffer from bad performances on the inputs of the post form.
 
 ### UI
 
 I would use custom made UI components for a question of branding.
-Due to the lack of available time to build clean and scalable components, I had to use Material UI instead.
+Due to the lack of available time to build clean and scalable components, I used Material UI instead.
 
-## Todo
+Evn through I included SASS and Tailwind to the project, they're barely used at all, because Material UI covered my needs.
 
-- Fix latency on inputs (using hooks)
-- Try to design the application as some sort of blog about nature, biodiversity
+### Tests
 
-- Install Cypress and configure it.
+I would add e2e tests with Cypress

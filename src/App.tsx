@@ -8,6 +8,8 @@ import PostLocalStorageService from './services/local-storage/post-local-storage
 import PostFormModal, { PostFormErrors, PostFormFields, PostFormModalProps } from './components/posts/form-modal/post-form-modal.component';
 import Button from '@mui/material/Button';
 import PostsList from './components/posts/list/posts-list.component';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
 
 export default function App(): JSX.Element {
   // Services
@@ -186,11 +188,21 @@ export default function App(): JSX.Element {
   }
 
   return (
-    <div>
-      <h1>Posts</h1>
-      <Button onClick={handlePostCreateClick}>
-        New Post
-      </Button>
+    <Container>
+      <Box
+        sx={{
+          display: 'flex',
+          padding: 2,
+          justifyContent: 'center'
+        }}
+      >
+        <Button
+          variant='contained' 
+          onClick={handlePostCreateClick}
+        >
+          Create a new post
+        </Button>
+      </Box>
 
       <PostsList
         posts={posts} 
@@ -210,6 +222,6 @@ export default function App(): JSX.Element {
         handleSubmit={postFormOptions.method}
         validation={formValidation}
       />
-    </div>
+    </Container>
   )
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Post from "../../../models/Post";
 import User from "../../../models/User";
 import List from '@mui/material/List';
@@ -46,11 +46,17 @@ export default function PostsList(
     return user ?? null;
   };
 
+
+  // Sort posts by ID desc
+  const sortedPosts = useMemo(() => {
+    return posts.sort((a, b) => b.id - a.id);
+  }, [posts]);
+  
   return (
     <React.Fragment>
       <List>
         {
-          posts.map((post: Post, index: number) => {
+          sortedPosts.map((post: Post, index: number) => {
             const user = getUserFromPost(post);
 
             return (

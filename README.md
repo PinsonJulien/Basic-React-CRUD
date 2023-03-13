@@ -44,6 +44,7 @@ https://basic-react-crud-pinson-julien.netlify.app/
 
 - Filtering with an input the list of posts
 - Allow to change the sorting from ASC to DESC, using a styled radio input.
+- Pagination
 
 ## What I would improve
 
@@ -56,7 +57,7 @@ The application currently suffer from bad performances on the inputs of the post
 I would use custom made UI components for a question of branding.
 Due to the lack of available time to build clean and scalable components, I used Material UI instead.
 
-Evn through I included SASS and Tailwind to the project, they're barely used at all, because Material UI covered my needs.
+Even through I included SASS and Tailwind to the project, they're barely used at all, because Material UI covered my needs.
 
 ### Tests
 

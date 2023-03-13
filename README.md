@@ -45,19 +45,7 @@ Due to the lack of available time to build clean and scalable components, I had 
 
 ## Todo
 
-- The whole UI using the services
+- Fix latency on inputs (using hooks)
 - Try to design the application as some sort of blog about nature, biodiversity
 
-- Install Material UI
 - Install Cypress and configure it.
-
-- Localstorage :
-  - Keeps the id of deleted records.
-  - Keeps newly created records and automatically set their id.
-  - Keeps updated records and replace them from received API call.
-
-- Delete
-  - Localstorage keeps id of deleted records.
-  
-- PostForm
-  - Make the validation a useState.

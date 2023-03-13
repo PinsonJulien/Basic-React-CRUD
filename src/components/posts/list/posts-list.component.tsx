@@ -40,20 +40,6 @@ export default function PostsList(
     setDetailedPost(post);
   };
 
-  const handleClose = () => {
-    setDetailedPost(null);
-  };
-
-  const handleEdit = (post: Post) => {
-    // trigger the edit method from parent
-    handlePostEditClick(post);
-  };
-
-  const handleDelete = (post: Post) => {
-    // Hide the modal and trigger the delete method from parent.
-    handlePostDeleteClick(post);
-  };
-
   const getUserFromPost = (post: Post): User | null => {
     const user = users.find((user: User) => user.id === post.userId);
     return user ?? null;

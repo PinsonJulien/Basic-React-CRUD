@@ -149,8 +149,18 @@ export default function PostFormModal(
         />
       </DialogContent>
 
-      <DialogActions>
-        <Button onClick={formSubmit}>{submitButtonName}</Button>
+      <DialogActions
+        sx={{
+          justifyContent: "center",
+          gap: 2
+        }}
+      >
+        <Button 
+          variant="contained"
+          onClick={formSubmit}
+        >
+          {submitButtonName}
+        </Button>
         <Button onClick={handleClose}>Cancel</Button>      
       </DialogActions>
     </Dialog>

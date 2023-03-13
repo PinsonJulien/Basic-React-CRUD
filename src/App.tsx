@@ -4,10 +4,10 @@ import Post from './models/Post';
 import User from './models/User';
 import PostApiService from './services/api/post-api.service';
 import UserApiService from './services/api/user-api.service';
-import PostsList from './components/posts-list/posts-list.component';
 import PostLocalStorageService from './services/local-storage/post-local-storage.service';
 import PostFormModal, { PostFormErrors, PostFormFields, PostFormModalProps } from './components/posts/form-modal/post-form-modal.component';
 import Button from '@mui/material/Button';
+import PostsList from './components/posts/list/posts-list.component';
 
 export default function App(): JSX.Element {
   // Services
@@ -192,7 +192,7 @@ export default function App(): JSX.Element {
         New Post
       </Button>
 
-      <PostsList 
+      <PostsList
         posts={posts} 
         users={users} 
         handlePostEditClick={handlePostEditClick}

@@ -38,6 +38,7 @@ export default function UserProfileBadge(
       </Avatar>
 
       <Typography
+        variant="subtitle2"
         component="span"
       >
         { userName }

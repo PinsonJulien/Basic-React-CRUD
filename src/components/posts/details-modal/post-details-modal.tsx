@@ -11,7 +11,7 @@ import UserProfileBadge from '../../users/profile-badge/user-profile-badge.compo
 import Button from '@mui/material/Button';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import Typography from '@mui/material/Typography';
 
 export interface PostDetailsModalProps {
   detailedPost: Post | null;
@@ -56,8 +56,13 @@ export default function  PostDetailsModal(
           gap: 2
         }}
       >
-        { capitalizeFirst(detailedPost!.title) }
-
+        <Typography
+          variant="h5"
+          component="span"
+        >
+          { capitalizeFirst(detailedPost!.title) }
+        </Typography>
+        
         <Stack
           direction="row"
           justifyContent="space-between"
@@ -88,7 +93,12 @@ export default function  PostDetailsModal(
       </DialogTitle>
 
       <DialogContent>
-        {detailedPost!.body}
+        <Typography
+          variant="body1"
+          component="p"
+        >
+          {detailedPost!.body}
+        </Typography>
       </DialogContent>
     </Dialog>
   );

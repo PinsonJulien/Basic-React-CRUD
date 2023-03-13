@@ -4,11 +4,12 @@ import User from "../../../models/User";
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
-import ListItemText from '@mui/material/ListItemText';
 import Button from '@mui/material/Button';
 import { capitalizeFirst } from "../../../helpers/strings/string.helper";
 import UserProfileBadge from "../../users/profile-badge/user-profile-badge.component";
 import PostDetailsModal from "../details-modal/post-details-modal";
+import Typography from '@mui/material/Typography';
+import Stack from '@mui/material/Stack';
 
 export interface PostsListProps {
   posts: Post[];
@@ -54,17 +55,25 @@ export default function PostsList(
 
             return (
               <React.Fragment key={post.id}>
-                <ListItem>
-                  <ListItemText
-                    primary={ capitalizeFirst(post.title) }
-                    secondary={
-                      <React.Fragment>
-                        <UserProfileBadge 
-                          user={user}
-                        />
-                      </React.Fragment>
-                    }
-                  />
+                <ListItem
+                  sx={{
+                    justifyContent: 'space-between'
+                  }}
+                >
+                  <Stack>
+                    <Typography
+                      component="span"
+                      variant="body1"
+                      gutterBottom
+                    >
+                      { capitalizeFirst(post.title) }
+                    </Typography>
+                    <UserProfileBadge 
+                      user={user}
+                    />
+
+                  </Stack>
+
                   <Button 
                     onClick={() => handleOpen(post)}
                   >

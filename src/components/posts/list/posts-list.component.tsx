@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Post from "../../../models/Post";
 import User from "../../../models/User";
 import List from '@mui/material/List';
@@ -41,63 +41,65 @@ export default function PostsList(
     setDetailedPost(post);
   };
 
-  const getUserFromPost = (post: Post): User | null => {
+  const getUserFromPost = useCallback((post: Post): User | null => {
     const user = users.find((user: User) => user.id === post.userId);
     return user ?? null;
-  };
-
+  }, [users]);
 
   // Sort posts by ID desc
   const sortedPosts = useMemo(() => {
     return posts.sort((a, b) => b.id - a.id);
   }, [posts]);
+
+  // Generate the list element.
+  const listElement = useMemo(() => {
+    return (
+      <List>
+      {
+        sortedPosts.map((post: Post, index: number) => {
+          const user = getUserFromPost(post);
+          return (
+            <React.Fragment key={post.id}>
+              <ListItem
+                sx={{
+                  justifyContent: 'space-between'
+                }}
+              >
+                <Stack>
+                  <Typography
+                    component="span"
+                    variant="body1"
+                    gutterBottom
+                  >
+                    { capitalizeFirst(post.title) }
+                  </Typography>
+                  <UserProfileBadge 
+                    user={user}
+                  />
+
+                </Stack>
+
+                <Button 
+                  onClick={() => handleOpen(post)}
+                >
+                  Read more
+                </Button>
+              </ListItem>
+              
+              { index !== posts.length -1 && <Divider /> }
+      
+            </React.Fragment>
+          );
+        })
+      }
+      </List>
+    );
+  }, [sortedPosts]);
   
   return (
     <React.Fragment>
-      <List>
-        {
-          sortedPosts.map((post: Post, index: number) => {
-            const user = getUserFromPost(post);
+      { listElement }
 
-            return (
-              <React.Fragment key={post.id}>
-                <ListItem
-                  sx={{
-                    justifyContent: 'space-between'
-                  }}
-                >
-                  <Stack>
-                    <Typography
-                      component="span"
-                      variant="body1"
-                      gutterBottom
-                    >
-                      { capitalizeFirst(post.title) }
-                    </Typography>
-                    <UserProfileBadge 
-                      user={user}
-                    />
-
-                  </Stack>
-
-                  <Button 
-                    onClick={() => handleOpen(post)}
-                  >
-                    Read more
-                  </Button>
-                </ListItem>
-                
-                {
-                  index !== posts.length -1 && (
-                    <Divider />
-                  )
-                }
-              </React.Fragment>
-            );
-          })
-        }
-      </List>
-      
       {
         detailedPost && (
           <PostDetailsModal

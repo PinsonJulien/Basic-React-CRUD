@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import './App.scss';
 import Post from './models/Post';
 import User from './models/User';
@@ -13,9 +13,17 @@ import Container from '@mui/material/Container';
 
 export default function App(): JSX.Element {
   // Services
-  const postApiService = new PostApiService();
-  const userApiService = new UserApiService();
-  const postLocalStorageService = new PostLocalStorageService();
+  const postApiService = useMemo(() => {
+    return new PostApiService();
+  }, []);
+  
+  const userApiService = useMemo(() => {
+    return new UserApiService();
+  }, []); 
+  
+  const postLocalStorageService = useMemo(() => {
+    return new PostLocalStorageService();
+  }, []);
 
   // States
   const [posts, setPosts] = useState<Post[]>([]);
@@ -54,7 +62,8 @@ export default function App(): JSX.Element {
       setPosts(posts);
       
       const users = await userApiService.getAll();
-      setUsers(users);
+      console.log(users);
+      setUsers([...users]);
     };
 
     fetchData();
@@ -79,7 +88,7 @@ export default function App(): JSX.Element {
   };
 
   // Handlers for update / delete buttons.
-  const handlePostEditClick = (updatedPost: Post): void  => {
+  const handlePostEditClick = useCallback((updatedPost: Post): void  => {
     // Use the post data to fill the form.
     const { id, title, body, userId } = updatedPost;
 
@@ -89,7 +98,7 @@ export default function App(): JSX.Element {
       id,
       title,
       body,
-      user: null
+      user: user ?? null
     });
 
     setPostFormOptions({
@@ -100,9 +109,9 @@ export default function App(): JSX.Element {
 
     // Open the modal
     setOpenPostFormModal(true);
-  };
+  }, [users]);
 
-  const handlePostDeleteClick = async (deletedPost: Post): Promise<void> => {
+  const handlePostDeleteClick = useCallback( async (deletedPost: Post): Promise<void> => {
     const { id } = deletedPost;
     // Delete the post using the API.
     await postApiService.deletebyId(id);
@@ -110,9 +119,11 @@ export default function App(): JSX.Element {
     // Remove it from the localStorage and refreshs the posts
     postLocalStorageService.delete(id);
     setPosts(postLocalStorageService.getAll());
-  };
+  }, [postApiService, postLocalStorageService]);
 
-  const createPost = async (postFormFields: PostFormFields): Promise<boolean> => {
+  const createPost = useCallback(async (postFormFields: PostFormFields): Promise<boolean> => {
+
+    console.log(postFormFields)
     // First check if the given Post data is valid.
     if (!isPostValid(postFormFields))
       return false;
@@ -125,8 +136,14 @@ export default function App(): JSX.Element {
       userId: (user) ? user.id : null,
     };
 
+    console.log(post)
+
+
     // Attempt to create it using the API.
     const newPost = await postApiService.create(post);
+
+    console.log(newPost)
+
 
     if (!newPost) 
       return false;
@@ -136,9 +153,9 @@ export default function App(): JSX.Element {
     setPosts(postLocalStorageService.getAll());
 
     return true;
-  }
+  }, [postLocalStorageService, postApiService]);
 
-  const updatePost = async (postFormFields: PostFormFields): Promise<boolean> => {
+  const updatePost = useCallback(async (postFormFields: PostFormFields): Promise<boolean> => {
     // First check if the given Post data is valid.
     if (!isPostValid(postFormFields))
       return false;
@@ -162,9 +179,9 @@ export default function App(): JSX.Element {
     setPosts(postLocalStorageService.getAll());
 
     return true;
-  }
+  }, [postLocalStorageService, postApiService]);
 
-  const formValidation = (postFormFields: PostFormFields): PostFormErrors => {
+  const formValidation = useCallback((postFormFields: PostFormFields): PostFormErrors => {
     const { title, body, user } = postFormFields;
     const errors: PostFormErrors = {};
 
@@ -180,12 +197,14 @@ export default function App(): JSX.Element {
         errors.user = "The user must exist.";
     }
 
+    console.log('error !! ', errors, 'users ', users)
+
     return errors;
-  }
+  }, [users]);
 
   const isPostValid = (postFormFields: PostFormFields): boolean => {
     return Object.keys(formValidation(postFormFields)).length === 0;
-  }
+  };
 
   return (
     <Container>

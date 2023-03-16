@@ -14,11 +14,9 @@ export default function UserProfileBadge(
   {user} : UserProfileBadgeProps
 ): JSX.Element 
 { 
-  const userName = useMemo(() => {
-    return (user) 
+  const userName = (user) 
     ? capitalizeFirst(user.name) 
     : 'Anonymous';
-  }, [user]);
 
   return (
     <Box

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import './post-form-modal.component.scss';
 import User from "../../../models/User";
 import Dialog from "@mui/material/Dialog";
@@ -70,7 +70,7 @@ export default function PostFormModal(
       // Close the modal
       setOpen(false);
     }    
-  }
+  };
 
   const handleFieldChange = async (name: string, value: any) => {
     setPostForm({
@@ -78,6 +78,31 @@ export default function PostFormModal(
       [name]: value
     });
   };
+
+  const userSelect = useCallback(() => {
+    return (
+      <Autocomplete
+        options={users}
+        value={postForm.user}
+        getOptionLabel={(user: User) => user.name}
+        onChange={(event, value) => {
+          handleFieldChange('user', value);
+        }}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            id="user"
+            name="user"            
+            label="Select author"
+            variant="outlined"
+            margin="normal"
+            error={!!formErrors.user}
+            helperText={formErrors.user}
+          />
+        )}
+      />
+    );
+  }, [users, postForm, formErrors]);
 
   return (
     <Dialog
@@ -127,26 +152,8 @@ export default function PostFormModal(
           helperText={formErrors.body}
         />
 
-        <Autocomplete
-          options={users}
-          value={postForm.user}
-          getOptionLabel={(user: User) => user.name}
-          onChange={(event, value) => {
-            handleFieldChange('user', value);
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              id="user"
-              name="user"            
-              label="Select author"
-              variant="outlined"
-              margin="normal"
-              error={!!formErrors.user}
-              helperText={formErrors.user}
-            />
-          )}
-        />
+        { userSelect() }
+
       </DialogContent>
 
       <DialogActions

@@ -5,7 +5,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Stack from '@mui/material/Stack';
 import { capitalizeFirst } from '../../../helpers/strings/string.helper';
 import Post from '../../../models/Post';
-import React, { SetStateAction, useMemo } from 'react';
+import React, { SetStateAction, useCallback, useMemo } from 'react';
 import User from '../../../models/User';
 import UserProfileBadge from '../../users/profile-badge/user-profile-badge.component';
 import Button from '@mui/material/Button';
@@ -29,14 +29,14 @@ export default function  PostDetailsModal(
     setDetailedPost(null);
   };
 
-  const handleEdit = (post: Post) => {
+  const handleEdit = () => {
     // trigger the edit method from parent
-    handlePostEditClick(post);
+    handlePostEditClick(detailedPost!);
   };
 
-  const handleDelete = (post: Post) => {
+  const handleDelete = () => {
     // Hide the modal and trigger the delete method from parent.
-    handlePostDeleteClick(post);
+    handlePostDeleteClick(detailedPost!);
   };
 
   const user = useMemo(() => {
@@ -78,12 +78,12 @@ export default function  PostDetailsModal(
             sx={{ justifySelf: 'flex-end', alignSelf: 'flex-end'}}
           >
             <Button
-              onClick={() => handleEdit(detailedPost!)}
+              onClick={handleEdit}
             >
               <EditIcon />
             </Button>
             <Button
-              onClick={() => handleDelete(detailedPost!)}
+              onClick={handleDelete}
             >
               <DeleteIcon />
             </Button>

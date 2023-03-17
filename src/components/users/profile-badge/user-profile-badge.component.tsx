@@ -4,7 +4,6 @@ import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { capitalizeFirst } from "../../../helpers/strings/string.helper";
-import { useMemo } from 'react';
 
 export interface UserProfileBadgeProps {
   user: User | null;
@@ -14,11 +13,9 @@ export default function UserProfileBadge(
   {user} : UserProfileBadgeProps
 ): JSX.Element 
 { 
-  const userName = useMemo(() => {
-    return (user) 
+  const userName = (user) 
     ? capitalizeFirst(user.name) 
     : 'Anonymous';
-  }, [user]);
 
   return (
     <Box

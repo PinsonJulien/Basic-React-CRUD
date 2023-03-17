@@ -5,8 +5,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Stack from '@mui/material/Stack';
 import { capitalizeFirst } from '../../../helpers/strings/string.helper';
 import Post from '../../../models/Post';
-import React, { SetStateAction, useMemo } from 'react';
-import User from '../../../models/User';
+import React, { SetStateAction } from 'react';
 import UserProfileBadge from '../../users/profile-badge/user-profile-badge.component';
 import Button from '@mui/material/Button';
 import EditIcon from '@mui/icons-material/Edit';
@@ -16,32 +15,27 @@ import Typography from '@mui/material/Typography';
 export interface PostDetailsModalProps {
   detailedPost: Post | null;
   setDetailedPost: React.Dispatch<SetStateAction<Post|null>>;
-  users: User[];
   handlePostEditClick: (post: Post) => void;
   handlePostDeleteClick: (post: Post) => void;
 };
 
 export default function  PostDetailsModal(
-  {detailedPost, setDetailedPost, users, handlePostEditClick, handlePostDeleteClick} : PostDetailsModalProps
+  {detailedPost, setDetailedPost, handlePostEditClick, handlePostDeleteClick} : PostDetailsModalProps
 ): JSX.Element
 {
   const handleClose = () => {
     setDetailedPost(null);
   };
 
-  const handleEdit = (post: Post) => {
+  const handleEdit = () => {
     // trigger the edit method from parent
-    handlePostEditClick(post);
+    handlePostEditClick(detailedPost!);
   };
 
-  const handleDelete = (post: Post) => {
+  const handleDelete = () => {
     // Hide the modal and trigger the delete method from parent.
-    handlePostDeleteClick(post);
+    handlePostDeleteClick(detailedPost!);
   };
-
-  const user = useMemo(() => {
-    return users.find((u: User) => u.id === detailedPost?.userId) ?? null;
-  }, [users, detailedPost]);
 
   return (
     <Dialog
@@ -70,7 +64,7 @@ export default function  PostDetailsModal(
           flexWrap='wrap'
         >
           <UserProfileBadge 
-            user={user}
+            user={(detailedPost && detailedPost.user) ? detailedPost.user : null}
           />
           <Stack
             direction="row"
@@ -78,12 +72,12 @@ export default function  PostDetailsModal(
             sx={{ justifySelf: 'flex-end', alignSelf: 'flex-end'}}
           >
             <Button
-              onClick={() => handleEdit(detailedPost!)}
+              onClick={handleEdit}
             >
               <EditIcon />
             </Button>
             <Button
-              onClick={() => handleDelete(detailedPost!)}
+              onClick={handleDelete}
             >
               <DeleteIcon />
             </Button>

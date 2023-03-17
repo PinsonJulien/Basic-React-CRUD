@@ -10,7 +10,7 @@ describe("PostLocalStorageService", () => {
     id: 1,
     title: '',
     body: '',
-    userId: null
+    userId: undefined
   });
 
   afterEach(() => {

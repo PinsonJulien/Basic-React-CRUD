@@ -16,13 +16,12 @@ import Typography from '@mui/material/Typography';
 export interface PostDetailsModalProps {
   detailedPost: Post | null;
   setDetailedPost: React.Dispatch<SetStateAction<Post|null>>;
-  users: Map<number, User>;
   handlePostEditClick: (post: Post) => void;
   handlePostDeleteClick: (post: Post) => void;
 };
 
 export default function  PostDetailsModal(
-  {detailedPost, setDetailedPost, users, handlePostEditClick, handlePostDeleteClick} : PostDetailsModalProps
+  {detailedPost, setDetailedPost, handlePostEditClick, handlePostDeleteClick} : PostDetailsModalProps
 ): JSX.Element
 {
   const handleClose = () => {
@@ -38,13 +37,6 @@ export default function  PostDetailsModal(
     // Hide the modal and trigger the delete method from parent.
     handlePostDeleteClick(detailedPost!);
   };
-
-  const user = useMemo((): User|null => {
-    if (detailedPost && detailedPost.userId)
-      return users.get(detailedPost.userId) ?? null;
-    
-    return null;
-  }, [users, detailedPost]);
 
   return (
     <Dialog
@@ -73,7 +65,7 @@ export default function  PostDetailsModal(
           flexWrap='wrap'
         >
           <UserProfileBadge 
-            user={user}
+            user={(detailedPost && detailedPost.user) ? detailedPost.user : null}
           />
           <Stack
             direction="row"

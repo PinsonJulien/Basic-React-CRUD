@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Post from "../../../models/Post";
-import User from "../../../models/User";
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
@@ -13,14 +12,13 @@ import Stack from '@mui/material/Stack';
 
 export interface PostsListProps {
   posts: Post[];
-  users: Map<number, User>;
 
   handlePostEditClick: (post: Post) => void;
   handlePostDeleteClick: (post: Post) => void;
 }
 
 export default function PostsList(
-  { posts, users, handlePostEditClick, handlePostDeleteClick }: PostsListProps
+  { posts, handlePostEditClick, handlePostDeleteClick }: PostsListProps
 ): JSX.Element
 {
   // States
@@ -52,10 +50,8 @@ export default function PostsList(
       <List>
       {
         sortedPosts.map((post: Post, index: number) => {
-          const user = (post.userId) 
-            ? users.get(post.userId) ?? null 
-            : null;
-                    
+          const user = (post.user) ? post.user : null; 
+
           return (
             <React.Fragment key={post.id}>
               <ListItem
@@ -92,7 +88,7 @@ export default function PostsList(
       }
       </List>
     );
-  }, [sortedPosts, users]);
+  }, [sortedPosts]);
   
   return (
     <React.Fragment>
@@ -103,7 +99,6 @@ export default function PostsList(
           <PostDetailsModal
             detailedPost={detailedPost}
             setDetailedPost={setDetailedPost}
-            users={users}
             handlePostEditClick={handlePostEditClick}
             handlePostDeleteClick={handlePostDeleteClick}
           />

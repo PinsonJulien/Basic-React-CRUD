@@ -28,7 +28,6 @@ export default function App(): JSX.Element {
   // States
   const [posts, setPosts] = useState<Post[]>([]);
   const [users, setUsers] = useState<Map<number, User>>(new Map());
-  //const [users, setUsers] = useState<User[]>([]);
   
   const [openPostFormModal, setOpenPostFormModal] = useState<boolean>(false);
 
@@ -50,8 +49,18 @@ export default function App(): JSX.Element {
   });
 
   useEffect(() => {
-    // Fetch posts and users on mount.
+    // Fetch users and posts on mount.
+
     const fetchData = async () => {
+      const users = await userApiService.getAll();
+
+      const usersMap = new Map<number, User>();
+      users.forEach((user: User) => {
+        usersMap.set(user.id, user);
+      });
+  
+      setUsers(usersMap);
+
       // Try to get the data from the localstorage, if it's empty, call the API.
       let posts = postLocalStorageService.getAll();
 
@@ -60,16 +69,13 @@ export default function App(): JSX.Element {
         postLocalStorageService.add(...posts);
       }
 
+      // Insert the User field to all posts.
+      posts = posts.map((post: Post) => ({
+        ...post,
+        user: (post.userId) ? usersMap.get(post.userId) : undefined,
+      }));
+
       setPosts(posts);
-      
-      const users = await userApiService.getAll();
-
-      const usersMap = new Map<number, User>();
-      users.forEach((user: User) => {
-        usersMap.set(user.id, user);
-      });
-
-      setUsers(usersMap);
     };
 
     fetchData();
@@ -98,7 +104,7 @@ export default function App(): JSX.Element {
     // Use the post data to fill the form.
     const { id, title, body, userId } = updatedPost;
 
-    const user = (userId) ? users.get(userId) : null; //users.find((u: User) => u.id === userId);
+    const user = (userId) ? users.get(userId) : null;
 
     setPostForm({
       id,
@@ -160,7 +166,7 @@ export default function App(): JSX.Element {
     const post: Partial<Post> = {
       title,
       body,
-      userId: (user) ? user.id : null,
+      userId: (user) ? user.id : undefined,
     };
 
     // Attempt to create it using the API.
@@ -168,6 +174,9 @@ export default function App(): JSX.Element {
 
     if (!newPost) 
       return false;
+
+    if (newPost.userId)
+      newPost.user = users.get(newPost.userId);
 
     // On success add it to localstorage and refresh posts using the localstorage.
     postLocalStorageService.add(newPost);
@@ -187,13 +196,16 @@ export default function App(): JSX.Element {
       id,
       title,
       body,
-      userId: (user) ? user.id : null,
+      userId: (user) ? user.id : undefined,
     };
     
     const updatedPost = await postApiService.updateById(id, post);
 
     if (!updatedPost) 
       return false;
+
+    if (updatedPost.userId)
+      updatedPost.user = users.get(updatedPost.userId);
 
     // On success modify the post in the localStorage and refresh posts using the localstorage.
     postLocalStorageService.update(updatedPost);
@@ -220,8 +232,7 @@ export default function App(): JSX.Element {
       </Box>
 
       <PostsList
-        posts={posts} 
-        users={users} 
+        posts={posts}
         handlePostEditClick={handlePostEditClick}
         handlePostDeleteClick={handlePostDeleteClick}
       />

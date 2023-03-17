@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import './post-form-modal.component.scss';
 import User from "../../../models/User";
 import Dialog from "@mui/material/Dialog";

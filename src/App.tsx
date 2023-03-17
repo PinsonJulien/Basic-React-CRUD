@@ -100,7 +100,7 @@ export default function App(): JSX.Element {
   };
 
   // Handlers for update / delete buttons.
-  const handlePostEditClick = useCallback((updatedPost: Post): void  => {
+  const handlePostEditClick = (updatedPost: Post): void  => {
     // Use the post data to fill the form.
     const { id, title, body, userId } = updatedPost;
 
@@ -121,9 +121,9 @@ export default function App(): JSX.Element {
 
     // Open the modal
     setOpenPostFormModal(true);
-  }, [users]);
+  };
 
-  const handlePostDeleteClick = useCallback( async (deletedPost: Post): Promise<void> => {
+  const handlePostDeleteClick = async (deletedPost: Post): Promise<void> => {
     const { id } = deletedPost;
     // Delete the post using the API.
     await postApiService.deletebyId(id);
@@ -131,9 +131,9 @@ export default function App(): JSX.Element {
     // Remove it from the localStorage and refreshs the posts
     postLocalStorageService.delete(id);
     setPosts(postLocalStorageService.getAll());
-  }, [postApiService, postLocalStorageService]);
+  };
 
-  const formValidation = useCallback((postFormFields: PostFormFields): PostFormErrors => {
+  const formValidation = (postFormFields: PostFormFields): PostFormErrors => {
     const { title, body, user } = postFormFields;
     const errors: PostFormErrors = {};
 
@@ -149,13 +149,13 @@ export default function App(): JSX.Element {
     }
 
     return errors;
-  }, [users]);
+  };
 
-  const isPostValid = useCallback((postFormFields: PostFormFields): boolean => {
+  const isPostValid = (postFormFields: PostFormFields): boolean => {
     return Object.keys(formValidation(postFormFields)).length === 0;
-  }, [formValidation]);
+  };
 
-  const createPost = useCallback(async (postFormFields: PostFormFields): Promise<boolean> => {
+  const createPost =  async (postFormFields: PostFormFields): Promise<boolean> => {
 
     // First check if the given Post data is valid.
     if (!isPostValid(postFormFields))
@@ -183,9 +183,9 @@ export default function App(): JSX.Element {
     setPosts(postLocalStorageService.getAll());
 
     return true;
-  }, [isPostValid, postLocalStorageService, postApiService]);
+  };
 
-  const updatePost = useCallback(async (postFormFields: PostFormFields): Promise<boolean> => {
+  const updatePost = async (postFormFields: PostFormFields): Promise<boolean> => {
     // First check if the given Post data is valid.
     if (!isPostValid(postFormFields))
       return false;
@@ -212,7 +212,7 @@ export default function App(): JSX.Element {
     setPosts(postLocalStorageService.getAll());
 
     return true;
-  }, [postLocalStorageService, postApiService]);
+  };
 
   return (
     <Container>

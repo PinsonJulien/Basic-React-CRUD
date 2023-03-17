@@ -28,7 +28,7 @@ export interface PostFormModalProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 
-  users: User[];
+  users: Map<number, User>;
   postForm: PostFormFields;
   setPostForm: React.Dispatch<React.SetStateAction<PostFormFields>>;
   handleSubmit: (postFormFields: PostFormFields) => Promise<boolean> | null;
@@ -82,7 +82,7 @@ export default function PostFormModal(
   const userSelect = useCallback(() => {
     return (
       <Autocomplete
-        options={users}
+        options={ [...users.values()]}
         value={postForm.user}
         getOptionLabel={(user: User) => user.name}
         onChange={(event, value) => {

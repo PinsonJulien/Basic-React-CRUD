@@ -27,7 +27,8 @@ export default function App(): JSX.Element {
 
   // States
   const [posts, setPosts] = useState<Post[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<Map<number, User>>(new Map());
+  //const [users, setUsers] = useState<User[]>([]);
   
   const [openPostFormModal, setOpenPostFormModal] = useState<boolean>(false);
 
@@ -62,8 +63,13 @@ export default function App(): JSX.Element {
       setPosts(posts);
       
       const users = await userApiService.getAll();
-      console.log(users);
-      setUsers([...users]);
+
+      const usersMap = new Map<number, User>();
+      users.forEach((user: User) => {
+        usersMap.set(user.id, user);
+      });
+
+      setUsers(usersMap);
     };
 
     fetchData();
@@ -92,7 +98,7 @@ export default function App(): JSX.Element {
     // Use the post data to fill the form.
     const { id, title, body, userId } = updatedPost;
 
-    const user = users.find((u: User) => u.id === userId);
+    const user = (userId) ? users.get(userId) : null; //users.find((u: User) => u.id === userId);
 
     setPostForm({
       id,
@@ -121,9 +127,30 @@ export default function App(): JSX.Element {
     setPosts(postLocalStorageService.getAll());
   }, [postApiService, postLocalStorageService]);
 
+  const formValidation = useCallback((postFormFields: PostFormFields): PostFormErrors => {
+    const { title, body, user } = postFormFields;
+    const errors: PostFormErrors = {};
+
+    if (title === '')
+      errors.title = "Title must be filled.";
+
+    if (body === '')
+      errors.body = "Body must be filled.";
+
+    if (user) {
+      if (!users.has(user.id))
+        errors.user = "The user must exist.";
+    }
+
+    return errors;
+  }, [users]);
+
+  const isPostValid = useCallback((postFormFields: PostFormFields): boolean => {
+    return Object.keys(formValidation(postFormFields)).length === 0;
+  }, [formValidation]);
+
   const createPost = useCallback(async (postFormFields: PostFormFields): Promise<boolean> => {
 
-    console.log(postFormFields)
     // First check if the given Post data is valid.
     if (!isPostValid(postFormFields))
       return false;
@@ -136,14 +163,8 @@ export default function App(): JSX.Element {
       userId: (user) ? user.id : null,
     };
 
-    console.log(post)
-
-
     // Attempt to create it using the API.
     const newPost = await postApiService.create(post);
-
-    console.log(newPost)
-
 
     if (!newPost) 
       return false;
@@ -153,7 +174,7 @@ export default function App(): JSX.Element {
     setPosts(postLocalStorageService.getAll());
 
     return true;
-  }, [postLocalStorageService, postApiService]);
+  }, [isPostValid, postLocalStorageService, postApiService]);
 
   const updatePost = useCallback(async (postFormFields: PostFormFields): Promise<boolean> => {
     // First check if the given Post data is valid.
@@ -180,31 +201,6 @@ export default function App(): JSX.Element {
 
     return true;
   }, [postLocalStorageService, postApiService]);
-
-  const formValidation = useCallback((postFormFields: PostFormFields): PostFormErrors => {
-    const { title, body, user } = postFormFields;
-    const errors: PostFormErrors = {};
-
-    if (title === '')
-      errors.title = "Title must be filled.";
-
-    if (body === '')
-      errors.body = "Body must be filled.";
-
-    if (user) {
-      const userExists = users.find((u: User) => u.id === user.id);
-      if (!userExists)
-        errors.user = "The user must exist.";
-    }
-
-    console.log('error !! ', errors, 'users ', users)
-
-    return errors;
-  }, [users]);
-
-  const isPostValid = (postFormFields: PostFormFields): boolean => {
-    return Object.keys(formValidation(postFormFields)).length === 0;
-  };
 
   return (
     <Container>

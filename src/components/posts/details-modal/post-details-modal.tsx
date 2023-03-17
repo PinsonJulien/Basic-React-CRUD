@@ -5,7 +5,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Stack from '@mui/material/Stack';
 import { capitalizeFirst } from '../../../helpers/strings/string.helper';
 import Post from '../../../models/Post';
-import React, { SetStateAction, useCallback, useMemo } from 'react';
+import React, { SetStateAction, useMemo } from 'react';
 import User from '../../../models/User';
 import UserProfileBadge from '../../users/profile-badge/user-profile-badge.component';
 import Button from '@mui/material/Button';
@@ -16,7 +16,7 @@ import Typography from '@mui/material/Typography';
 export interface PostDetailsModalProps {
   detailedPost: Post | null;
   setDetailedPost: React.Dispatch<SetStateAction<Post|null>>;
-  users: User[];
+  users: Map<number, User>;
   handlePostEditClick: (post: Post) => void;
   handlePostDeleteClick: (post: Post) => void;
 };
@@ -39,8 +39,11 @@ export default function  PostDetailsModal(
     handlePostDeleteClick(detailedPost!);
   };
 
-  const user = useMemo(() => {
-    return users.find((u: User) => u.id === detailedPost?.userId) ?? null;
+  const user = useMemo((): User|null => {
+    if (detailedPost && detailedPost.userId)
+      return users.get(detailedPost.userId) ?? null;
+    
+    return null;
   }, [users, detailedPost]);
 
   return (

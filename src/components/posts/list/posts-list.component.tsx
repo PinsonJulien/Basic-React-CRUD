@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Post from "../../../models/Post";
 import User from "../../../models/User";
 import List from '@mui/material/List';
@@ -13,7 +13,7 @@ import Stack from '@mui/material/Stack';
 
 export interface PostsListProps {
   posts: Post[];
-  users: User[];
+  users: Map<number, User>;
 
   handlePostEditClick: (post: Post) => void;
   handlePostDeleteClick: (post: Post) => void;
@@ -41,11 +41,6 @@ export default function PostsList(
     setDetailedPost(post);
   };
 
-  const getUserFromPost = useCallback((post: Post): User | null => {
-    const user = users.find((user: User) => user.id === post.userId);
-    return user ?? null;
-  }, [users]);
-
   // Sort posts by ID desc
   const sortedPosts = useMemo(() => {
     return posts.sort((a, b) => b.id - a.id);
@@ -57,7 +52,10 @@ export default function PostsList(
       <List>
       {
         sortedPosts.map((post: Post, index: number) => {
-          const user = getUserFromPost(post);
+          const user = (post.userId) 
+            ? users.get(post.userId) ?? null 
+            : null;
+                    
           return (
             <React.Fragment key={post.id}>
               <ListItem
@@ -94,7 +92,7 @@ export default function PostsList(
       }
       </List>
     );
-  }, [sortedPosts]);
+  }, [sortedPosts, users]);
   
   return (
     <React.Fragment>
